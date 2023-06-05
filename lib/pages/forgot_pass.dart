@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_app_11_5/components/custom_app_bar.dart';
 import 'package:todo_app_11_5/models/account_model.dart';
 import 'package:todo_app_11_5/pages/reset_pass_page.dart';
-
 import '../resources/app_color.dart';
 
 class ForgotPassPage extends StatefulWidget {
@@ -73,29 +72,32 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                                 print(emailController.text);
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(const SnackBar(
-                                  content: Text("Email is not exist!?"),
+                                  content: Text(
+                                      "Email have not been signed up yet!?"),
                                 ));
-                              } else {
-                                myauth.setConfig(
-                                    appEmail: "contact@hdevcoder.com",
-                                    appName: "Email OTP",
-                                    userEmail: emailController.text,
-                                    otpLength: 4,
-                                    otpType: OTPType.digitsOnly);
-                                if (myauth.sendOTP() == true) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("OTP has been sent"),
-                                  ));
-                                }
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text("OTP has been sent"),
-                                ));
-                                setState(() {
-                                  isOTP = true;
-                                });
-                              }
+                              } else
+                                () async {
+                                  myauth.setConfig(
+                                      appEmail: "contact@hdevcoder.com",
+                                      appName: "Email OTP",
+                                      userEmail: emailController.text,
+                                      otpLength: 4,
+                                      otpType: OTPType.digitsOnly);
+                                  if (await myauth.sendOTP()) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text("OTP has been sent"),
+                                    ));
+                                    setState(() {
+                                      isOTP = true;
+                                    });
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text("Oops, OTP send failed"),
+                                    ));
+                                  }
+                                }();
                             },
                             icon: const Icon(
                               Icons.send_rounded,
@@ -115,7 +117,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                        readOnly: isOTP,
+                        readOnly: !isOTP,
                         controller: otpController,
                         decoration: InputDecoration(hintText: "Enter OTP")),
                   ),
@@ -128,14 +130,29 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                             MaterialStateProperty.all<Color>(Colors.white),
                       ),
                       onPressed: isOTP
-                          ? () {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text("OTP is verified"),
-                              ));
-                              Route route = MaterialPageRoute(
-                                  builder: (context) => ResetPassPage());
-                              Navigator.push(context, route);
+                          ? () async {
+                              if (await myauth.verifyOTP(
+                                      otp: otpController.text) ==
+                                  true) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  backgroundColor: AppColor.grey,
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: const Duration(seconds: 2),
+                                  content: Text("OTP is verified"),
+                                ));
+                                Route route = MaterialPageRoute(
+                                    builder: (context) => ResetPassPage());
+                                Navigator.push(context, route);
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  backgroundColor: AppColor.grey,
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: const Duration(seconds: 2),
+                                  content: Text("Invalid OTP"),
+                                ));
+                              }
                             }
                           : null,
                       child: const Text("Verify")),
