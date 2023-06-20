@@ -62,122 +62,115 @@ class _ResetPassPageState extends State<ResetPassPage> {
         return true;
       },
       child: Scaffold(
-          appBar: CustomAppBar(
-            showAvatar: false,
-            leftPressed: () {
-              Navigator.pop(context);
-            },
-            title: '',
-          ),
           body: Stack(
-            children: [
-              Positioned.fill(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(children: [
-                    const Text(
-                      'Reset Password',
-                      style: TextStyle(
-                          color: AppColor.blue,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                    CustomTextField(
-                      readOnly: true,
-                      iconData: Icons.man_4,
-                      controller: usernameController =
-                          TextEditingController(text: account.username),
-                      hintText: 'Username',
-                    ),
-                    CustomTextField(
-                      iconData: Icons.lock,
-                      controller: newPasswordController,
-                      hintText: 'New Password',
-                      iconPass: iconPass,
-                      onPass: _showPassword,
-                      isPassword: isPassword,
-                      onChanged: (value) {
-                        setState(() {
-                          passwordMatchError = newPasswordController.text !=
-                              ResetPassPageController.text;
-                        });
-                      },
-                    ),
-                    CustomTextField(
-                      iconData: Icons.lock,
-                      controller: ResetPassPageController,
-                      hintText: 'Repeat Password',
-                      isPassword: isPassword,
-                      onChanged: (value) {
-                        setState(() {
-                          passwordMatchError = newPasswordController.text !=
-                              ResetPassPageController.text;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    Visibility(
-                        visible: passwordMatchError,
-                        child: const Text(
-                          'Passwords is not match',
-                          style: TextStyle(
-                              color: AppColor.red, fontWeight: FontWeight.bold),
-                        )),
-                  ]),
+        children: [
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0)
+                  .copyWith(top: MediaQuery.of(context).padding.top + 50),
+              child: Column(children: [
+                const Text(
+                  'Reset Password',
+                  style: TextStyle(
+                      color: AppColor.blue,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              Positioned(
-                top: 300,
-                left: 40,
-                right: 40,
-                child: CustomButton(
-                  text: 'Submit',
-                  onTap: () {
-                    String username = usernameController.text.trim();
-                    String password = passwordController.text.trim();
-                    String newPassword = newPasswordController.text.trim();
-                    String ResetPassPage = ResetPassPageController.text.trim();
-                    String notification = 'Changed password success!';
-                    print(account.username);
-                    print(account.password);
-                    if (newPassword == '' || ResetPassPage == '') {
-                      notification = 'Please insert information!';
-                    } else if (newPassword == '') {
-                      notification = 'Please insert new password';
-                    } else if (newPassword != ResetPassPage) {
-                      notification = 'Confirm Password is not match!';
-                    } else if (newPassword.length < 6 ||
-                        newPassword.length > 35) {
-                      notification = 'Password have be from 6 to 35 characters';
-                    } else
-                      setState(() {
-                        accountList.clear();
-                        accountList.add(AccountModel(
-                            username: username, password: newPassword));
-                      });
-                    _prefs.addSignup(accountList);
-                    accountList1.clear();
-                    _prefs.addAccount(accountList1);
-                    notification = 'Reset password success!';
-                    Route route = MaterialPageRoute(
-                        builder: (context) => LoginPage(
-                              user: usernameController,
-                            ));
-                    Navigator.push(context, route);
-
-                    final snackBar = SnackBar(
-                      content: Text(notification),
-                      backgroundColor: AppColor.grey,
-                      behavior: SnackBarBehavior.floating,
-                      duration: const Duration(seconds: 2),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                CustomTextField(
+                  readOnly: true,
+                  iconData: Icons.man_4,
+                  controller: usernameController =
+                      TextEditingController(text: account.username),
+                  hintText: 'Username',
+                ),
+                CustomTextField(
+                  iconData: Icons.lock,
+                  controller: newPasswordController,
+                  hintText: 'New Password',
+                  iconPass: iconPass,
+                  onPass: _showPassword,
+                  isPassword: isPassword,
+                  onChanged: (value) {
+                    setState(() {
+                      passwordMatchError = newPasswordController.text !=
+                          ResetPassPageController.text;
+                    });
                   },
                 ),
-              ),
-            ],
-          )),
+                CustomTextField(
+                  iconData: Icons.lock,
+                  controller: ResetPassPageController,
+                  hintText: 'Repeat Password',
+                  isPassword: isPassword,
+                  onChanged: (value) {
+                    setState(() {
+                      passwordMatchError = newPasswordController.text !=
+                          ResetPassPageController.text;
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                Visibility(
+                    visible: passwordMatchError,
+                    child: const Text(
+                      'Passwords is not match',
+                      style: TextStyle(
+                          color: AppColor.red, fontWeight: FontWeight.bold),
+                    )),
+              ]),
+            ),
+          ),
+          Positioned(
+            top: 300,
+            left: 40,
+            right: 40,
+            child: CustomButton(
+              text: 'Submit',
+              onTap: () {
+                String username = usernameController.text.trim();
+                String password = passwordController.text.trim();
+                String newPassword = newPasswordController.text.trim();
+                String ResetPassPage = ResetPassPageController.text.trim();
+                String notification = 'Changed password success!';
+                print(account.username);
+                print(account.password);
+                if (newPassword == '' || ResetPassPage == '') {
+                  notification = 'Please insert information!';
+                } else if (newPassword == '') {
+                  notification = 'Please insert new password';
+                } else if (newPassword != ResetPassPage) {
+                  notification = 'Confirm Password is not match!';
+                } else if (newPassword.length < 6 || newPassword.length > 35) {
+                  notification = 'Password have be from 6 to 35 characters';
+                } else
+                  setState(() {
+                    accountList.clear();
+                    accountList.add(AccountModel(
+                        username: username, password: newPassword));
+                  });
+                _prefs.addSignup(accountList);
+                accountList1.clear();
+                _prefs.addAccount(accountList1);
+                notification = 'Reset password success!';
+                Route route = MaterialPageRoute(
+                    builder: (context) => LoginPage(
+                          user: usernameController,
+                        ));
+                Navigator.push(context, route);
+
+                final snackBar = SnackBar(
+                  content: Text(notification),
+                  backgroundColor: AppColor.grey,
+                  behavior: SnackBarBehavior.floating,
+                  duration: const Duration(seconds: 2),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              },
+            ),
+          ),
+        ],
+      )),
     );
   }
 }
