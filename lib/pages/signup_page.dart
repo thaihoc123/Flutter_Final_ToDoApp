@@ -24,6 +24,8 @@ class _SignupPageState extends State<SignUpPage> {
   IconData? iconPass = Icons.visibility;
   final SharedPrefs _prefs = SharedPrefs();
 
+  bool isEmail = false;
+
   @override
   void initState() {
     super.initState();
@@ -97,6 +99,18 @@ class _SignupPageState extends State<SignUpPage> {
                           textAlign: TextAlign.center,
                         ),
                         CustomTextField(
+                          onChanged: (value) {
+                            if (!value.contains('@')) {
+                              setState(() {
+                                isEmail = true;
+                              });
+                            } else {
+                              setState(() {
+                                isEmail = false;
+                              });
+                            }
+                            ;
+                          },
                           iconData: Icons.man_4,
                           controller: usernameController,
                           hintText: 'Username',
@@ -170,9 +184,7 @@ class _SignupPageState extends State<SignUpPage> {
                       accountList.add(
                           AccountModel(username: username, password: password));
                       _prefs.addSignup(accountList);
-                      print(accountList1);
                       accountList1.addAll(accountList);
-                      print(accountList1);
                       _prefs.addAccount(accountList1);
                       notification = 'Sign up success!';
                       Route route =
@@ -188,6 +200,19 @@ class _SignupPageState extends State<SignUpPage> {
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   },
                 ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: MediaQuery.of(context).padding.bottom + 10,
+                child: Visibility(
+                    visible: isEmail,
+                    child: Center(
+                      child: Text(
+                        'You should use your true email!',
+                        style: TextStyle(fontSize: 15, color: AppColor.grey),
+                      ),
+                    )),
               )
             ],
           )),
